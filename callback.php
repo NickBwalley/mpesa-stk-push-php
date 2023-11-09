@@ -6,7 +6,7 @@ $log = fopen($logFile, "a");
 fwrite($log, $stkCallbackResponse);
 fclose($log);
 
-$data = json_decode($stkCallbackResponse, true);
+$data = json_decode($stkCallbackResponse);
 
 $MerchantRequestID = $data->Body->stkCallback->MerchantRequestID;
 $CheckoutRequestID = $data->Body->stkCallback->CheckoutRequestID;
