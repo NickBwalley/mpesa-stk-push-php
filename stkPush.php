@@ -3,7 +3,7 @@
 include 'accessToken.php';
 date_default_timezone_set('Africa/Nairobi');
 $processrequestUrl = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
-$callbackurl = 'https://03e8-197-232-61-245.ngrok-free.app/mpesa-stk-push/callback.php';
+$callbackurl = 'https://0a83-197-237-166-21.ngrok-free.app/mpesa-stk-push/callback.php';
 $passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 $BusinessShortCode = '174379';
 $Timestamp = date('YmdHis');
@@ -12,7 +12,7 @@ $Password = base64_encode($BusinessShortCode . $passkey . $Timestamp);
 $phone = '254714394332';//phone number to receive the stk push
 $money = '1';
 $PartyA = $phone;
-$PartyB = '254708374149';
+$PartyB = '254714394332';
 $AccountReference = 'NICK BWALLEY';
 $TransactionDesc = 'stkpush test';
 $Amount = $money;
