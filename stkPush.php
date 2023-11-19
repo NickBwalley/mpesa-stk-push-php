@@ -1,3 +1,13 @@
+<?php
+// HERE WE GET THE VALUES FROM THE LARAVEL APP AND PASS IT DOWN TO OUR FIELDS 
+$name = isset($_GET['name']) ? $_GET['name'] : null;
+$employeeIdAuto = isset($_GET['employee_id_auto']) ? $_GET['employee_id_auto'] : null;
+$employeeMpesaNumber = isset($_GET['employee_mpesa_number']) ? $_GET['employee_mpesa_number'] : null;
+$sendersMpesaNumber = isset($_GET['senders_mpesa_number']) ? $_GET['senders_mpesa_number'] : null;
+$amountPaid = isset($_GET['amount_paid']) ? $_GET['amount_paid'] : null;
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,22 +19,56 @@
 <body>
 
 <div class="container mt-5">
-    <form method="POST" action="stkpush.php">
-        <div class="form-group">
-            <label for="PartyA">Enter Senders Phone Number</label>
-            <input type="tel" class="form-control" name="PartyA" id="PartyA" placeholder="Enter phone number for Party A" required>
+    <div class="card shadow-lg rounded-lg border-success">
+         <div class="card-body p-4">
+            <img src="./assets/img/lipa-na-mpesa.jpg" class="img-fluid mb-4" alt="Lipa na M-Pesa Image" style="max-width: 20%; height: auto;">
+            
+            <form method="POST" action="stkpush.php">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="PartyA">Employee Name</label>
+                            <input type="tel" class="form-control" name="name" id="name" value="<?php echo htmlspecialchars($name); ?>" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="PartyA">Employee ID</label>
+                            <input type="tel" class="form-control" name="employee_id_auto" id="employee_id_auto" value="<?php echo htmlspecialchars($employeeIdAuto); ?>" required readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="PartyA">Enter Employee M-Pesa Number</label>
+                            <input type="tel" class="form-control" name="PartyB" id="PartyB" value="<?php echo htmlspecialchars($employeeMpesaNumber); ?>" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="PartyB">Enter Recipient M-Pesa Number</label>
+                            <input type="tel" class="form-control" name="PartyA" id="PartyA" value="<?php echo htmlspecialchars($sendersMpesaNumber); ?>" required readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="amount">Amount to be sent:</label>
+                            <input type="number" class="form-control" name="amount" id="amount" value="<?php echo htmlspecialchars($amountPaid); ?>" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" name="pay" class="btn btn-outline-success btn-block">LIPA NA M-PESA</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="PartyB">Enter Recipient Phone Number</label>
-            <input type="tel" class="form-control" name="PartyB" id="PartyB" placeholder="Enter phone number for Party B" required>
-        </div>
-        <div class="form-group">
-            <label for="amount">Amount to be sent:</label>
-            <input type="number" class="form-control" name="amount" id="amount" placeholder="Enter amount" required>
-        </div>
-        <button type="submit" name="pay" class="btn btn-primary">CLICK TO PAY</button>
-    </form>
+    </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
@@ -52,7 +96,10 @@
 <!-- --------------------THIS IS THE BACKEND CODE-------------------------  -->
 
 
+
 <?php
+  ob_start();
+
   if (isset($_POST['pay'])) {
     //INCLUDE THE ACCESS TOKEN FILE
     include 'accessToken.php';
@@ -98,13 +145,27 @@
     $data = json_decode($curl_response);
     $CheckoutRequestID = $data->CheckoutRequestID;
     $ResponseCode = $data->ResponseCode;
+
     if ($ResponseCode == "0") {
-      echo "The CheckoutRequestID for this transaction is : " . $CheckoutRequestID;
-      // Redirect to query.php with CheckoutRequestID as a query parameter
-      header("Location: query.php?checkout_request_id=$CheckoutRequestID");
-      exit();
+        // Construct the URL with the CheckoutRequestID as a query parameter
+        $redirectUrl = "query.php?checkout_request_id=" . urlencode($CheckoutRequestID);
+
+        // Use header() to perform the redirection
+        header("Location: $redirectUrl");
+        exit();
+    } else {
+        // Handle the case where $ResponseCode is not "0"
+        // You can include an error message or redirect to an error page
+        echo "Error occurred with ResponseCode: $ResponseCode";
+        // or redirect to an error page
+        // header("Location: error.php");
+        // exit();
     }
+
+
   }
+
+  ob_end_flush();
 ?>
 
 
