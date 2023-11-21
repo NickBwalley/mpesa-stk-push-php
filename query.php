@@ -16,7 +16,8 @@
         <div class="card-body">
 
         <?php
-
+        session_start();
+                
         //INCLUDE ACCESS TOKEN FILE 
         include 'accessToken.php';
         date_default_timezone_set('Africa/Nairobi');
@@ -59,6 +60,7 @@
                 switch ($ResultCode) {
                     case '1037':
                         echo '<div class="alert alert-primary" role="alert">' . $message1037 . '</div>';
+                        echo $_SESSION['name'];
                         // Add the return back to home transaction
                         echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-dark">Back to Home</a>';
                         break;
@@ -70,7 +72,22 @@
                     case '1032':
                         echo '<div class="alert alert-danger" role="alert">' . $message1032 . '</div>';
                         // Add the return back to home transaction
-                        echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-info">Back to Home</a>';
+                        $_SESSION['name'];
+                        $_SESSION['employee_id_auto'];
+                        $_SESSION['employee_mpesa_number'];
+                        $_SESSION['senders_mpesa_number'];
+                        $_SESSION['amount_paid'];
+
+                        // Add the form to update the record
+                        echo '<form action="http://127.0.0.1:8000/form/salary/update" method="POST">';
+                        echo '<input type="hidden" name="name" value="' . $_SESSION['name'] . '">';
+                        echo '<input type="hidden" name="employee_id_auto" value="' . $_SESSION['employee_id_auto'] . '">';
+                        echo '<input type="hidden" name="employee_mpesa_number" value="' . $_SESSION['employee_mpesa_number'] . '">';
+                        echo '<input type="hidden" name="senders_mpesa_number" value="' . $_SESSION['senders_mpesa_number'] . '">';
+                        echo '<input type="hidden" name="amount_paid" value="' . $_SESSION['amount_paid'] . '">';
+                        // echo '<button type="submit" class="btn btn-info">UPDATE RECORD</button>';
+                       echo '<button type="submit" class="btn btn-info">UPDATE RECORD</button>';
+                        echo '</form>';
                         break;
                     case '1':
                         echo '<div class="alert alert-warning" role="alert">' . $message1 . '</div>';
@@ -78,7 +95,7 @@
                         echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-warning">Back to Home</a>';
                         break;
                     default:
-                        echo '<div class="alert alert-info" role="alert">Unknown ResultCode</div>';
+                        echo '<div class="alert alert-warning" role="alert">Transaction Expired. Please Try Again Later!.</div>';
                         break;
                 }
                 

@@ -42,13 +42,13 @@ $amountPaid = isset($_GET['amount_paid']) ? $_GET['amount_paid'] : null;
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="PartyA">Enter Employee M-Pesa Number</label>
+                            <label for="PartyA">Enter Employees M-Pesa Number</label>
                             <input type="tel" class="form-control" name="PartyB" id="PartyB" value="<?php echo htmlspecialchars($employeeMpesaNumber); ?>" required readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="PartyB">Enter Recipient M-Pesa Number</label>
+                            <label for="PartyB">Enter Senders M-Pesa Number</label>
                             <input type="tel" class="form-control" name="PartyA" id="PartyA" value="<?php echo htmlspecialchars($sendersMpesaNumber); ?>" required readonly>
                         </div>
                     </div>
@@ -74,21 +74,6 @@ $amountPaid = isset($_GET['amount_paid']) ? $_GET['amount_paid'] : null;
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<!-- <script>
-    function submitForm() {
-        // Add your form submission logic here
-        // For example, you can use JavaScript to retrieve input values and send them to a server.
-        var PartyA = document.getElementById('PartyA').value;
-        var PartyB = document.getElementById('PartyB').value;
-        var amount = document.getElementById('amount').value;
-
-        // Add your logic for form submission here
-        console.log(PartyA);
-        console.log(PartyB);
-        console.log(amount);
-    }
-</script> -->
-
 </body>
 </html>
 
@@ -99,6 +84,7 @@ $amountPaid = isset($_GET['amount_paid']) ? $_GET['amount_paid'] : null;
 
 <?php
   ob_start();
+    session_start();
 
   if (isset($_POST['pay'])) {
     //INCLUDE THE ACCESS TOKEN FILE
@@ -147,21 +133,25 @@ $amountPaid = isset($_GET['amount_paid']) ? $_GET['amount_paid'] : null;
     $ResponseCode = $data->ResponseCode;
 
     if ($ResponseCode == "0") {
+        // Save values in sessions
+        $_SESSION['name'] = $_POST['name'];
+        $_SESSION['employee_id_auto'] = $_POST['employee_id_auto'];
+        $_SESSION['employee_mpesa_number'] = $_POST['PartyB'];
+        $_SESSION['senders_mpesa_number'] = $_POST['PartyA'];
+        $_SESSION['amount_paid'] = $_POST['amount'];
+
         // Construct the URL with the CheckoutRequestID as a query parameter
         $redirectUrl = "query.php?checkout_request_id=" . urlencode($CheckoutRequestID);
+
 
         // Use header() to perform the redirection
         header("Location: $redirectUrl");
         exit();
     } else {
         // Handle the case where $ResponseCode is not "0"
-        // You can include an error message or redirect to an error page
         echo "Error occurred with ResponseCode: $ResponseCode";
-        // or redirect to an error page
-        // header("Location: error.php");
-        // exit();
+        
     }
-
 
   }
 
