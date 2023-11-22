@@ -52,6 +52,7 @@
         $message0 = "Transaction was successful";
         $message1032 = "Transaction cancelled by the user";
         $message1 = "Insufficient Balance for the transaction";
+        $defaultmsg = "Transaction Expired. Try Again Later :)";
         
         echo '<div class="alert alert-secondary" role="alert">Please wait as your transaction is being processed. </div>';
         
@@ -60,47 +61,48 @@
                 switch ($ResultCode) {
                     case '1037':
                         echo '<div class="alert alert-primary" role="alert">' . $message1037 . '</div>';
-                        echo $_SESSION['name'];
                         // Add the return back to home transaction
                         echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-dark">Back to Home</a>';
                         break;
                     case '0':
                         echo '<div class="alert alert-success" role="alert">' . $message0 . '</div>';
-                        // Add the "Finish Transaction" button
-                        echo '<a href="stkPush.php" class="btn btn-success">Finish Transaction</a>';
-                        break;
-                    case '1032':
-                        echo '<div class="alert alert-danger" role="alert">' . $message1032 . '</div>';
-                        // Add the return back to home transaction
+                        // getting data from the sessions
                         $_SESSION['name'];
                         $_SESSION['employee_id_auto'];
                         $_SESSION['employee_mpesa_number'];
                         $_SESSION['senders_mpesa_number'];
                         $_SESSION['amount_paid'];
+                        // Add the "Finish Transaction" button
+                        $redirectUrl = "http://127.0.0.1:8000/form/salary/mpesacomplete?";
+                        $redirectUrl .= "name=" . urlencode($_SESSION['name']);
+                        $redirectUrl .= "&employee_id_auto=" . $_SESSION['employee_id_auto'];
+                        $redirectUrl .= "&employee_mpesa_number=" . $_SESSION['employee_mpesa_number'];
+                        $redirectUrl .= "&senders_mpesa_number=" . $_SESSION['senders_mpesa_number'];
+                        $redirectUrl .= "&amount_paid=" . $_SESSION['amount_paid'];
 
-                        // Add the form to update the record
-                        echo '<form action="http://127.0.0.1:8000/form/salary/update" method="POST">';
-                        echo '<input type="hidden" name="name" value="' . $_SESSION['name'] . '">';
-                        echo '<input type="hidden" name="employee_id_auto" value="' . $_SESSION['employee_id_auto'] . '">';
-                        echo '<input type="hidden" name="employee_mpesa_number" value="' . $_SESSION['employee_mpesa_number'] . '">';
-                        echo '<input type="hidden" name="senders_mpesa_number" value="' . $_SESSION['senders_mpesa_number'] . '">';
-                        echo '<input type="hidden" name="amount_paid" value="' . $_SESSION['amount_paid'] . '">';
-                        // echo '<button type="submit" class="btn btn-info">UPDATE RECORD</button>';
-                       echo '<button type="submit" class="btn btn-info">UPDATE RECORD</button>';
-                        echo '</form>';
+                        echo '<a href="' . $redirectUrl . '" class="btn btn-success">Update Transaction</a>';
+
+                        break;
+                    case '1032':
+                        echo '<div class="alert alert-danger" role="alert">' . $message1032 . '</div>';
+                        // Add the return back to home transaction
+                        echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-dark">Back to Home</a>';
+                        
                         break;
                     case '1':
                         echo '<div class="alert alert-warning" role="alert">' . $message1 . '</div>';
                         // Add the return back to home transaction
-                        echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-warning">Back to Home</a>';
+                        echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-dark">Back to Home</a>';
                         break;
                     default:
-                        echo '<div class="alert alert-warning" role="alert">Transaction Expired. Please Try Again Later!.</div>';
+                        echo '<div class="alert alert-warning" role="alert">' .$defaultmsg .'</div>';
+                        // Add the return back to home transaction
+                        echo '<a href="http://127.0.0.1:8000/form/salary/checkout" class="btn btn-dark">Back to Home</a>';
                         break;
                 }
                 
             }
-            // header("Refresh: 5"); // Refreshes the page after every 5 seconds 
+            header("Refresh: 5"); // Refreshes the page after every 5 seconds 
         ?>
 </div>
     </div>
